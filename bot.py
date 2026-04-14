@@ -9,7 +9,7 @@ import json
 from datetime import datetime, time
 
 import os
-TOKEN = os.getenv("8668070498:AAHjUH55tI9TEubCvDxz0Hk9QG-oOItmivw")
+TOKEN = os.getenv("TOKEN")
 CONFIG_FILE = "config.json"
 
 # =====================
