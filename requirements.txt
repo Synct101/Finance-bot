@@ -1,3 +1,5 @@
 python-telegram-bot
 pandas
 matplotlib
+gspread
+oauth2client
