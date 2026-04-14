@@ -7,6 +7,17 @@ import os
 import matplotlib.pyplot as plt
 import json
 from datetime import datetime, time
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+scope = [
+    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/drive"
+]
+
+creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+client = gspread.authorize(creds)
+
+sheet = client.open("Finance Bot").sheet1
 
 import os
 TOKEN = os.getenv("TOKEN")
@@ -102,7 +113,11 @@ async def expense(update: Update, context: ContextTypes.DEFAULT_TYPE):
     df = pd.read_csv(file)
     df.loc[len(df)] = [kategori, jumlah]
     df.to_csv(file, index=False)
-
+    sheet.append_row([
+    str(datetime.now()),
+    kategori,
+    jumlah
+    ])
     cfg = load_config()
     used = df[df["kategori"] == kategori]["jumlah"].sum()
     budget = cfg["budget"].get(kategori, 0)
@@ -168,7 +183,13 @@ async def free_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         df = pd.read_csv(file)
         df.loc[len(df)] = [kategori, jumlah]
         df.to_csv(file, index=False)
-
+        
+        sheet.append_row([
+        str(datetime.now()),
+        kategori,
+        jumlah
+        ])
+        
         await update.message.reply_text(f"Tercatat: {kategori} {jumlah}")
     except:
         pass
